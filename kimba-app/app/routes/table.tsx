@@ -1,7 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import NavSideBar from "~/components/NavSideBar";
-import Table from "~/components/Table";
 import pool from "~/db";
 
 export const meta: MetaFunction = () => {
@@ -23,7 +22,7 @@ export default function Index() {
   return (
     <div>
       <NavSideBar tables={data.tables.rows}>
-
+        <Outlet />
       </NavSideBar>
     </div>
   );
