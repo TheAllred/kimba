@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import Table from "~/components/Table";
 import pool from "~/db";
 
@@ -19,10 +19,11 @@ export const meta: MetaFunction = ({
   ];
 };
 
-export async function loader({ params }: { params: { tableName: string } }) {
+export async function loader({ params }: { params: { tableName: string, schema: string } }) {
   const target_table = params.tableName;
+  const table_schema = params.schema;
 
-  const contentsQuery = `SELECT * from public.${target_table};`;
+  const contentsQuery = `SELECT * from ${table_schema}.${target_table};`;
   const columnsQuery = `SELECT 
     c.column_name, 
     c.data_type, 
@@ -49,7 +50,7 @@ export async function loader({ params }: { params: { tableName: string } }) {
   const columns = await pool.query(columnsQuery);
   const contents = await pool.query(contentsQuery);
 
-  return { contents, columns };
+  return { contents, columns, target_table, table_schema };
 }
 
 // Note the "action" export name, this will handle our form POST
@@ -128,14 +129,20 @@ export default function Index() {
       <Form id="newRow" method="post" reloadDocument></Form>
       <Form id="deleteRows" method="post" reloadDocument></Form>
       <Table
+        target_table={data.target_table}
+        table_schema={data.table_schema}
         columns={data.columns.rows}
         contents={data.contents.rows}
         actionData={actionData}
       />
-      {/* json of what is contained in columns
-      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
-        <pre>{JSON.stringify(data.columns, null, 2)}</pre>
+      {/* json of what is contained in columns */}
+      {/* <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
+        <pre>{JSON.stringify(data.target_table, null, 2)}</pre>
       </div> */}
+      {/* relative position div */}
+      <div className="relative ">
+        <Outlet />
+      </div>
     </>
   );
 }

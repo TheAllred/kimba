@@ -13,7 +13,9 @@ export const meta: MetaFunction = () => {
 
 export async function loader() {
   const tables = await pool.query(
-    `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`
+    `SELECT table_name, table_schema FROM information_schema.tables
+    WHERE table_schema  != 'pg_catalog' 
+    AND table_schema != 'information_schema'`
   );
   return { tables };
 }
@@ -22,9 +24,7 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
-      <NavSideBar tables={data.tables.rows}>
-
-      </NavSideBar>
+      <h1>Hello World!</h1>
     </div>
   );
 }

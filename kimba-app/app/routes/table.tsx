@@ -12,13 +12,27 @@ export const meta: MetaFunction = () => {
 
 export async function loader() {
   const tables = await pool.query(
-    `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`
+    `SELECT 
+  table_schema, 
+  jsonb_agg(table_name) AS tables
+FROM 
+  information_schema.tables 
+WHERE 
+  table_schema != 'pg_catalog' 
+  AND table_schema != 'information_schema' 
+GROUP BY 
+  table_schema 
+ORDER BY 
+  table_schema;`
   );
   return { tables };
 }
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
+
+
+
   return (
     <div>
       <NavSideBar tables={data.tables.rows}>

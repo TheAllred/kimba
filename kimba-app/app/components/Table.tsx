@@ -1,13 +1,19 @@
+import { PencilSquareIcon } from "@heroicons/react/16/solid";
+
 import React, { useState } from "react";
 
 export default function Table({
   columns,
   contents,
   actionData,
+  target_table,
+  table_schema,
 }: {
   columns: any[];
   contents: any[];
   actionData: any;
+  target_table: string;
+  table_schema: string;
 }) {
   // State to track the clicked indices
   const [clickedIndices, setClickedIndices] = useState<number[]>([]);
@@ -67,29 +73,50 @@ export default function Table({
                 return (
                   // hidden inputs for a form containing clickedIndices and the primary key column name, the form name is delete rows
                   // form is hidden and the submit button is hidden
-                  <>
+                  <a
+                    key={primaryKey}
+                    className={`flex flex-row ${
+                      clickedIndices.includes(primaryKey)
+                        ? "border-red-500 border-s-2"
+                        : ""
+                    }`}
+                    onClick={() => handleRowClick(primaryKey)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {columns.map((column: any, index: number) => {
+                      return (
+                        <div
+                          title={column.constraint_type}
+                          className="flex-1 p-4 border-b border-gray-200"
+                        >
+                          {/* {content[columns[index].column_name]} jsonified */}
+
+                          {/* {JSON.stringify(
+                            content[columns[index].column_name],
+                            null,
+                            2
+                          )}
+                          If the value is anything but a string, json stringify it
+                          */}
+                          {typeof content[columns[index].column_name] ===
+                          "string"
+                            ? content[columns[index].column_name]
+                            : JSON.stringify(
+                                content[columns[index].column_name],
+                                null,
+                                2
+                              )}
+                        </div>
+
+                      );
+                    })}
                     <a
-                      key={primaryKey}
-                      className={`flex flex-row ${
-                        clickedIndices.includes(primaryKey)
-                          ? "border-blue-500 border-s-2"
-                          : ""
-                      }`}
-                      onClick={() => handleRowClick(primaryKey)}
-                      style={{ cursor: "pointer" }}
+                      className="border-none bg-transparent text-blue-600 opacity-10 hover:opacity-100"
+                      href={`/table/${table_schema}/${target_table}/${primaryKeyColumn}/${primaryKey}`}
                     >
-                      {columns.map((column: any, index: number) => {
-                        return (
-                          <div
-                            title={column.constraint_type}
-                            className="flex-1 p-4 border-b border-gray-200"
-                          >
-                            {content[columns[index].column_name]}
-                          </div>
-                        );
-                      })}
+                      <PencilSquareIcon className="h-6 w-6" />
                     </a>
-                  </>
+                  </a>
                 );
               })}
               {/* INPUT NEW ROW */}
@@ -111,9 +138,6 @@ export default function Table({
                     className:
                       "block w-full sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-none rounded-md placeholder-gray-500 ml-0 mr-4 my-2",
                     placeholder: columns[index]["column_name"],
-                    disabled:
-                      columns[index]["constraint_name"]?.endsWith("_pkey"),
-                    defaultValue: "",
                   };
                   if (
                     actionData &&
@@ -144,7 +168,7 @@ export default function Table({
                 name="primaryKey"
                 type="text"
                 hidden
-                defaultValue={JSON.stringify(clickedIndices)}
+                value={JSON.stringify(clickedIndices)}
                 readOnly
               ></input>
               <input
@@ -152,16 +176,16 @@ export default function Table({
                 name="primaryKeyColumn"
                 type="text"
                 hidden
-                defaultValue={findPrimaryKey(columns)}
+                value={findPrimaryKey(columns)}
                 readOnly
               ></input>
             </div>
             <button
               type="submit"
               form="newRow"
-              className="block sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-none rounded-md text-blue-600 m-4 w-min"
+              className="block sm:text-sm rounded-md text-blue-600 m-4 "
             >
-              Save
+              Insert New Row
             </button>
             {/* delete button */}
             {/* only show delete button if there are items in checkedIndices */}
@@ -169,7 +193,7 @@ export default function Table({
               <button
                 type="submit"
                 form="deleteRows"
-                className="block sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-none rounded-md text-red-600 m-4 w-min"
+                className="block sm:text-sm border-none rounded-md text-red-600 m-4 "
               >
                 Delete Selected
               </button>

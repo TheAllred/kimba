@@ -1,10 +1,12 @@
 import {
+  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteError,
 } from "@remix-run/react";
 
 import type { LinksFunction } from "@remix-run/node";
@@ -31,3 +33,38 @@ export default function App() {
     </html>
   );
 }
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  return (
+    <html>
+      <head>
+        <title>Oops!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+      {/* design a cool modal at the center of the page */}
+        <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-4xl text-gray-800">
+            {isRouteErrorResponse(error)
+              ? `${error.status} ${error.statusText}`
+              : error instanceof Error
+              ? error.message
+              : "Unknown Error"}
+          </h1>
+          <h2>How did we get here?</h2>
+          <br />
+          <h2>What did you do??</h2>
+        </div>
+        <h1 className="text-4xl text-gray-900">Hi Mom</h1>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+  // {/* {isRouteErrorResponse(error)
+  //             ? `${error.status} ${error.statusText}`
+  //             : error instanceof Error
+  //             ? error.message
+  //             : "Unknown Error"} */}

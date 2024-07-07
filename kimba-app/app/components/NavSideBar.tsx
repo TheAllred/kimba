@@ -16,30 +16,16 @@ import {
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
   TableCellsIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
+  CommandLineIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 
-const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
-];
-const teams = [];
 const userNavigation = [
   { name: "Your profile", href: "#" },
   { name: "Sign out", href: "#" },
@@ -50,12 +36,12 @@ function classNames(...classes) {
 }
 
 export default function NavSideBar({ children, tables }: any) {
-  const navTables = tables.map((table: any) => ({
-    name: table.table_name,
-    href: `/table/${table.table_name}`,
-    icon: TableCellsIcon,
-    current: false,
-  }));
+  // const navTables = tables.map((table: any) => ({
+  //   name: table.table_schema,
+  //   href: `/table/${table.table_schema}/${table}`,
+  //   icon: TableCellsIcon,
+  //   current: false
+  // }));
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -120,65 +106,48 @@ export default function NavSideBar({ children, tables }: any) {
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
-                            {navTables.map((item) => (
-                              <li key={item.name}>
-                                <a
-                                  href={item.href}
-                                  className={classNames(
-                                    item.current
-                                      ? "bg-gray-50 text-indigo-600"
-                                      : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50",
-                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                  )}
-                                >
-                                  <item.icon
-                                    className={classNames(
-                                      item.current
-                                        ? "text-indigo-600"
-                                        : "text-gray-400 group-hover:text-indigo-600",
-                                      "h-6 w-6 shrink-0"
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                  {item.name}
-                                </a>
-                              </li>
-                            ))}
+                            {
+                              // tables is an object with table_schema being the name of the schema. tables is an array of table names. I want the nav to be a list of schemas with the tables as children links that have an href as /table/${table.table_schema}/${table.table_name}
+                              tables.map((schema: any) => (
+                                <div>
+                                  {/* Small title for displaying the schema name */}
+
+                                  <span className="text-m font-semibold text-blue-500 border-b-4">
+                                    {schema.table_schema}
+                                  </span>
+
+                                  {schema.tables.map((table: any) => (
+                                    <li key={table}>
+                                      <a
+                                        href={`/table/${schema.table_schema}/${table}`}
+                                        className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                                      >
+                                        <TableCellsIcon
+                                          className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                                          aria-hidden="true"
+                                        />
+                                        {table}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </div>
+                              ))
+                            }
                           </ul>
                         </li>
-                        {/* <li>
-                          <div className="text-xs font-semibold leading-6 text-gray-400">
-                            Your teams
-                          </div>
-                          <ul role="list" className="-mx-2 mt-2 space-y-1">
-                            {teams.map((team) => (
-                              <li key={team.name}>
-                                <a
-                                  href={team.href}
-                                  className={classNames(
-                                    team.current
-                                      ? "bg-gray-50 text-indigo-600"
-                                      : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50",
-                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                  )}
-                                >
-                                  <span
-                                    className={classNames(
-                                      team.current
-                                        ? "text-indigo-600 border-indigo-600"
-                                        : "text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600",
-                                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white"
-                                    )}
-                                  >
-                                    {team.initial}
-                                  </span>
-                                  <span className="truncate">{team.name}</span>
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </li> */}
                         <li className="mt-auto">
+                          <a
+                            href={"/sql"}
+                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                          >
+                            <CommandLineIcon
+                              className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                              aria-hidden="true"
+                            />
+                            SQL Query
+                          </a>
+                        </li>
+                        <li className="">
                           <a
                             href="#"
                             className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
@@ -216,65 +185,48 @@ export default function NavSideBar({ children, tables }: any) {
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navTables.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-gray-50 text-indigo-600"
-                              : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                          )}
-                        >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-indigo-600"
-                                : "text-gray-400 group-hover:text-indigo-600",
-                              "h-6 w-6 shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
+                    {
+                      // tables is an object with table_schema being the name of the schema. tables is an array of table names. I want the nav to be a list of schemas with the tables as children links that have an href as /table/${table.table_schema}/${table.table_name}
+                      tables.map((schema: any) => (
+                        <div>
+                          {/* Small title for displaying the schema name */}
+
+                          <span className="text-m font-semibold text-blue-500 border-b-4">
+                            {schema.table_schema}
+                          </span>
+
+                          {schema.tables.map((table: any) => (
+                            <li key={table}>
+                              <a
+                                href={`/table/${schema.table_schema}/${table}`}
+                                className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                              >
+                                <TableCellsIcon
+                                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                                  aria-hidden="true"
+                                />
+                                {table}
+                              </a>
+                            </li>
+                          ))}
+                        </div>
+                      ))
+                    }
                   </ul>
                 </li>
-                {/* <li>
-                  <div className="text-xs font-semibold leading-6 text-gray-400">
-                    Your teams
-                  </div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
-                      <li key={team.name}>
-                        <a
-                          href={team.href}
-                          className={classNames(
-                            team.current
-                              ? "bg-gray-50 text-indigo-600"
-                              : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                          )}
-                        >
-                          <span
-                            className={classNames(
-                              team.current
-                                ? "text-indigo-600 border-indigo-600"
-                                : "text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600",
-                              "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white"
-                            )}
-                          >
-                            {team.initial}
-                          </span>
-                          <span className="truncate">{team.name}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li> */}
                 <li className="mt-auto">
+                  <a
+                    href={"/sql"}
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                  >
+                    <CommandLineIcon
+                      className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                      aria-hidden="true"
+                    />
+                    SQL Query
+                  </a>
+                </li>
+                <li className="">
                   <a
                     href="#"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
