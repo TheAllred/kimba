@@ -151,18 +151,7 @@ export default function NavSideBar({
                             SQL Query
                           </a>
                         </li>
-                        <li className="">
-                          <a
-                            href="#"
-                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-600 dark:hover:bg-gray-800"
-                          >
-                            <Cog6ToothIcon
-                              className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
-                              aria-hidden="true"
-                            />
-                            Settings
-                          </a>
-                        </li>
+                    
                       </ul>
                     </nav>
                   </div>
@@ -230,18 +219,7 @@ export default function NavSideBar({
                     SQL Query
                   </a>
                 </li>
-                <li className="">
-                  <a
-                    href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600  dark:text-white dark:hover:text-indigo-600 dark:hover:bg-gray-800"
-                  >
-                    <Cog6ToothIcon
-                      className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
-                      aria-hidden="true"
-                    />
-                    Settings
-                  </a>
-                </li>
+            
               </ul>
             </nav>
           </div>

@@ -77,8 +77,8 @@ export default function Table({
                       key={primaryKey}
                       className={`${
                         clickedIndices.includes(primaryKey)
-                          ? "border-red-500 border-s-2 dark:border-red-400"
-                          : ""
+                          ? "border-red-500 border-s-2 dark:border-red-600"
+                          : "border-s-2 border-gray-200 dark:border-gray-600 "
                       }`}
                       onClick={() => handleRowClick(primaryKey)}
                     >
@@ -188,14 +188,14 @@ export default function Table({
               form="deleteRows"
               className="block sm:text-sm border-none rounded-md text-red-600 m-4 "
             >
-              Delete Selected
+              Delete Selected ({clickedIndices.length} Row{clickedIndices.length > 1 ? "s" : ""})
             </button>
           )}
           {/* Display Json of action Data */}
           <div className="mt-4">
             {actionData && actionData.result.name === "error" && (
               <div
-                className={`p-4 bg-red-100 border border-red-600 rounded-md ${
+                className={`p-4 bg-red-100 border border-red-600 dark:bg-red-950 dark:text-white rounded-md overflow-hidden ${
                   !isResultVisible ? "hidden" : ""
                 }`}
               >
