@@ -1,17 +1,12 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { DataFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import Table from "~/components/Table";
-import pool from "~/db";
-
 import { Form } from "@remix-run/react";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
+import { getPool } from "~/session.server";
 
-export const meta: MetaFunction = ({
-  params,
-}: {
-  params: { tableName: string };
-}) => {
+export const meta: MetaFunction = ({ params }) => {
   const target_table = params.tableName;
   return [
     { title: target_table + " - Kimba" },
@@ -19,9 +14,10 @@ export const meta: MetaFunction = ({
   ];
 };
 
-export async function loader({ params }: { params: { tableName: string, schema: string } }) {
-  const target_table = params.tableName;
-  const table_schema = params.schema;
+export async function loader(args: DataFunctionArgs) {
+  const pool = await getPool(args);
+  const target_table = args.params.tableName;
+  const table_schema = args.params.schema;
 
   const contentsQuery = `SELECT * from ${table_schema}.${target_table};`;
   const columnsQuery = `SELECT 
@@ -54,9 +50,10 @@ export async function loader({ params }: { params: { tableName: string, schema: 
 }
 
 // Note the "action" export name, this will handle our form POST
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const target_table = params.tableName;
-  const formData = await request.formData();
+export const action = async (args: ActionFunctionArgs) => {
+  const pool = await getPool(args);
+  const target_table = args.params.tableName;
+  const formData = await args.request.formData();
   // remove the action from the form data and assign it to a new variable
   const action = formData.get("action-KIMBAUSEONLY");
   formData.delete("action-KIMBAUSEONLY");
@@ -124,8 +121,11 @@ export default function Index() {
   const actionData = useActionData<typeof action>();
   const data = useLoaderData<typeof loader>();
   return (
-    <>
+    <div className=" dark:bg-gray-900">
       {/* reload Form on submission */}
+      <div className="relative  ">
+        <Outlet />
+      </div>
       <Form id="newRow" method="post" reloadDocument></Form>
       <Form id="deleteRows" method="post" reloadDocument></Form>
       <Table
@@ -140,9 +140,6 @@ export default function Index() {
         <pre>{JSON.stringify(data.target_table, null, 2)}</pre>
       </div> */}
       {/* relative position div */}
-      <div className="relative ">
-        <Outlet />
-      </div>
-    </>
+    </div>
   );
 }

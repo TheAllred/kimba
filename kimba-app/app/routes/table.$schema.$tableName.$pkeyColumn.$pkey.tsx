@@ -1,18 +1,16 @@
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  DataFunctionArgs,
+  redirect,
+} from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
-import pool from "~/db";
+import { getPool } from "~/session.server";
 
-export async function loader({
-  params,
-}: {
-  params: {
-    tableName: string;
-    schema: string;
-    pkeyColumn: string;
-    pkey: string;
-  };
-}) {
+export async function loader(args: DataFunctionArgs) {
+  const { params } = args;
+
+  const pool = await getPool(args);
   const target_table = params.tableName;
   const table_schema = params.schema;
   const pkeyColumn = params.pkeyColumn;
@@ -48,8 +46,9 @@ export async function loader({
   return { contents, columns, target_table, table_schema };
 }
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const formData = await request.formData();
+export const action = async (args: ActionFunctionArgs) => {
+  const pool = await getPool(args);
+  const formData = await args.request.formData();
 
   // remove the action from the form data and assign it to a new variable
   const action = formData.get("action-KIMBAUSEONLY");
@@ -92,18 +91,11 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <div>
-      <Form id="editRow" method="post" ></Form>
-      {/* position: absolute; center page modal that contains inputs on the item being edited */}
+    <div className="absolute flex justify-center">
+      <Form id="editRow" method="post"></Form>
       <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
         // full screen modal
-        className="bg-white p-8 rounded-lg shadow-lg w-96 h-96"
+        className="bg-white p-8 rounded-lg shadow-lg w-96 h-96 "
       >
         {/* ex button that navigates to ../.. */}
         <a href={`..`}>
@@ -159,9 +151,6 @@ export default function Index() {
         </button>
       </div>
       {/* json of whats in form data */}
-      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
-        <pre>{JSON.stringify(actionData, null, 2)}</pre>
-      </div>
     </div>
   );
 }

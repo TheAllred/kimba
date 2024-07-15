@@ -1,7 +1,7 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { DataFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import NavSideBar from "~/components/NavSideBar";
-import pool from "~/db";
+import { getCookieValue, getPool } from "~/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,8 +10,9 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader() {
-  const tables = await pool.query(
+export async function loader(args: DataFunctionArgs) {
+  const pool = await getPool(args);
+  const { rows: tables } = await pool.query(
     `SELECT 
   table_schema, 
   jsonb_agg(table_name) AS tables
@@ -25,19 +26,21 @@ GROUP BY
 ORDER BY 
   table_schema;`
   );
-  return { tables };
+  console.log(tables);
+
+  const connectionString = await getCookieValue(args);
+  const dataBaseName = connectionString.split("/")[3];
+  return { tables, dataBaseName };
 }
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
 
-
-
   return (
-    <div>
-      <NavSideBar tables={data.tables.rows}>
+    <>
+      <NavSideBar tables={data.tables} databaseName={data.dataBaseName}>
         <Outlet />
       </NavSideBar>
-    </div>
+    </>
   );
 }

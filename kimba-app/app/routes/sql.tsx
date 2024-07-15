@@ -1,4 +1,10 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+// ignore typescript error
+// @ts-ignore
+import type {
+  ActionFunctionArgs,
+  DataFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Form,
   Outlet,
@@ -9,7 +15,7 @@ import {
 import NavSideBar from "~/components/NavSideBar";
 import ResultMessage from "~/components/ResultMessage";
 import SimpleTable from "~/components/SimpleTable";
-import pool from "~/db";
+import { getCookieValue, getPool } from "~/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,7 +24,9 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader() {
+export async function loader(args: DataFunctionArgs) {
+  const pool = await getPool(args);
+
   const tables = await pool.query(
     `SELECT 
   table_schema, 
@@ -33,18 +41,21 @@ GROUP BY
 ORDER BY 
   table_schema;`
   );
-  return { tables };
+
+  const connectionString = await getCookieValue(args);
+  const databaseName = connectionString.split("/")[3];
+
+  return { tables, databaseName };
 }
 
 // action
-export const action = async ({ request }: ActionFunctionArgs) => {
-
-  const formData = await request.formData();
+export const action = async (args: DataFunctionArgs) => {
+  const pool = await getPool(args);
+  const formData = await args.request.formData();
   const sql = formData.get("sql");
-  console.log(sql);
   if (sql !== null) {
     try {
-      const result = await pool.query(sql);
+      const result = await pool.query(String(sql));
       console.log(result.rows);
       return { sql, result };
     } catch (e) {
@@ -59,11 +70,9 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
-
-
   return (
     <div>
-      <NavSideBar tables={data.tables.rows}>
+      <NavSideBar tables={data.tables.rows} databaseName={data.databaseName}>
         {/* Large text input inside a form  */}
         <Form className="p-4" method="post" reloadDocument>
           <label className="block text-sm font-medium text-gray-700"></label>
@@ -74,7 +83,7 @@ export default function Index() {
             placeholder="SELECT * FROM table;"
             // if sql exists set it to be default value
             {...(actionData?.sql && { defaultValue: actionData.sql })}
-            
+
             // defaultValue={"select * from states;"}
           ></textarea>
           {/* Disclaimer */}

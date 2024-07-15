@@ -1,25 +1,26 @@
 import { PencilSquareIcon } from "@heroicons/react/16/solid";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function Table({
   columns,
   contents,
   actionData,
-  target_table,
   table_schema,
+  target_table,
 }: {
   columns: any[];
   contents: any[];
   actionData: any;
-  target_table: string;
   table_schema: string;
+  target_table: string;
 }) {
   // State to track the clicked indices
   const [clickedIndices, setClickedIndices] = useState<number[]>([]);
   const [isResultVisible, setIsResultVisible] = useState(true);
 
   const handleRowClick = (index: number) => {
+    console.log("CLICK ME!");
     if (clickedIndices.includes(index)) {
       setClickedIndices(clickedIndices.filter((i) => i !== index));
     } else {
@@ -48,22 +49,18 @@ export default function Table({
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 ">
             {/* Div that is styled like a table */}
             {/* json of what is in clickedIndices */}
             {/* <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
               <pre>{JSON.stringify(clickedIndices, null, 2)}</pre>
             </div> */}
-            <div className="overflow-hidden border border-gray-200 rounded-lg">
+            <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-800">
               <div className="flex flex-row">
                 {/* Table heading */}
                 {columns.map((column: any) => (
-                  <div className="flex-1 p-2 bg-gray-100 border-b border-gray-200">
+                  <div className="flex-1 p-2 bg-gray-100 border-b border-gray-200  dark:border-gray-200  dark:bg-gray-800 dark:text-white">
                     {column.column_name}
-                    {/* Json of whats contained in column */}
-                    {/* <div className="bg-gray-100 border-b border-gray-200 p-4">
-                      <pre>{JSON.stringify(column, null, 2)}</pre>
-                    </div> */}
                   </div>
                 ))}
               </div>
@@ -71,33 +68,21 @@ export default function Table({
                 const primaryKeyColumn = findPrimaryKey(columns);
                 const primaryKey = contents[index][primaryKeyColumn];
                 return (
-                  // hidden inputs for a form containing clickedIndices and the primary key column name, the form name is delete rows
-                  // form is hidden and the submit button is hidden
-                  <a
+                  <div
                     key={primaryKey}
                     className={`flex flex-row ${
                       clickedIndices.includes(primaryKey)
-                        ? "border-red-500 border-s-2"
+                        ? "border-red-500 border-s-2 dark:border-red-400"
                         : ""
-                    }`}
+                    } `}
                     onClick={() => handleRowClick(primaryKey)}
-                    style={{ cursor: "pointer" }}
                   >
                     {columns.map((column: any, index: number) => {
                       return (
                         <div
                           title={column.constraint_type}
-                          className="flex-1 p-4 border-b border-gray-200"
+                          className="flex-1 p-4 border-b border-gray-200 dark:border-gray-600 dark:text-white"
                         >
-                          {/* {content[columns[index].column_name]} jsonified */}
-
-                          {/* {JSON.stringify(
-                            content[columns[index].column_name],
-                            null,
-                            2
-                          )}
-                          If the value is anything but a string, json stringify it
-                          */}
                           {typeof content[columns[index].column_name] ===
                           "string"
                             ? content[columns[index].column_name]
@@ -107,7 +92,6 @@ export default function Table({
                                 2
                               )}
                         </div>
-
                       );
                     })}
                     <a
@@ -116,7 +100,7 @@ export default function Table({
                     >
                       <PencilSquareIcon className="h-6 w-6" />
                     </a>
-                  </a>
+                  </div>
                 );
               })}
               {/* INPUT NEW ROW */}

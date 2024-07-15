@@ -24,7 +24,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="h-full  dark:bg-gray-900">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
@@ -63,8 +63,3 @@ export function ErrorBoundary() {
     </html>
   );
 }
-  // {/* {isRouteErrorResponse(error)
-  //             ? `${error.status} ${error.statusText}`
-  //             : error instanceof Error
-  //             ? error.message
-  //             : "Unknown Error"} */}
