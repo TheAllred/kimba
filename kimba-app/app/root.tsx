@@ -11,8 +11,14 @@ import {
 
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css";
+import favicon from "./images/favicon.ico";
 
 export const links: LinksFunction = () => [
+  {
+    rel: "icon",
+    href: favicon,
+    type: "image/png",
+  },
   { rel: "stylesheet", href: stylesheet },
 ];
 export default function App() {
@@ -44,14 +50,14 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body>
-      {/* design a cool modal at the center of the page */}
+        {/* design a cool modal at the center of the page */}
         <div className="flex flex-col items-center justify-center h-screen">
           <h1 className="text-4xl text-gray-800">
             {isRouteErrorResponse(error)
               ? `${error.status} ${error.statusText}`
               : error instanceof Error
-              ? error.message
-              : "Unknown Error"}
+                ? error.message
+                : "Unknown Error"}
           </h1>
           <h2>How did we get here?</h2>
           <br />

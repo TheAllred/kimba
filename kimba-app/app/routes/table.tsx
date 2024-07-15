@@ -26,10 +26,11 @@ GROUP BY
 ORDER BY 
   table_schema;`
   );
-  console.log(tables);
 
   const connectionString = await getCookieValue(args);
-  const dataBaseName = connectionString.split("/")[3];
+  const dataBaseNamePre = connectionString.split("/")[3];
+  // remove any thing after ? if there is in the database name
+  const dataBaseName = dataBaseNamePre.split("?")[0];
   return { tables, dataBaseName };
 }
 

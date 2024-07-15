@@ -83,11 +83,6 @@ export const action = async (args: ActionFunctionArgs) => {
 // Modal to edit row data based on primary key passed in by the url param
 export default function Index() {
   let { tableName, pkey, pkeyColumn, schema } = useParams();
-  console.log(pkey);
-  console.log(tableName);
-  console.log(schema);
-  console.log(pkeyColumn);
-
   const actionData = useActionData<typeof action>();
   const data = useLoaderData<typeof loader>();
 

@@ -56,7 +56,6 @@ export const action = async (args: DataFunctionArgs) => {
   if (sql !== null) {
     try {
       const result = await pool.query(String(sql));
-      console.log(result.rows);
       return { sql, result };
     } catch (e) {
       return { sql, e };

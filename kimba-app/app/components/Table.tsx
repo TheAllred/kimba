@@ -20,7 +20,6 @@ export default function Table({
   const [isResultVisible, setIsResultVisible] = useState(true);
 
   const handleRowClick = (index: number) => {
-    console.log("CLICK ME!");
     if (clickedIndices.includes(index)) {
       setClickedIndices(clickedIndices.filter((i) => i !== index));
     } else {

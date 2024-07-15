@@ -15,7 +15,8 @@ export const meta: MetaFunction = () => {
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
-  const cookieValue = formData.get("cookieValue");
+  const cookieValueRaw = String(formData.get("cookieValue"));
+  const cookieValue = cookieValueRaw.trim();
   const cookieHeader = await myCookie.serialize(cookieValue);
   // check if connection string is valid
 
@@ -36,7 +37,6 @@ export async function action({ request }: { request: Request }) {
     },
   });
 }
-
 
 export default function Index() {
   const actionData = useActionData();
