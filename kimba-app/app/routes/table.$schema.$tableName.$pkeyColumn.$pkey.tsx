@@ -6,6 +6,7 @@ import {
 import { useActionData } from "@remix-run/react";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
 import { getPool } from "~/session.server";
+ 
 
 export async function loader(args: DataFunctionArgs) {
   const { params } = args;
@@ -91,20 +92,23 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <div className="absolute flex justify-center">
+    <div className="absolute w-screen">
       <Form id="editRow" method="post"></Form>
       <div
         // full screen modal
-        className="bg-white p-8 rounded-lg shadow-lg w-96 h-96 "
+        className="bg-white dark:bg-gray-800 dark:text-white p-8 rounded-lg shadow-lg w-1/2 relative"
       >
         {/* ex button that navigates to ../.. */}
-        <a href={`..`}>
-          <button className="bg-red-500 text-white p-2 rounded-lg">X</button>
+        <a href={`..`} className="absolute right-0 -top-4 p-4 pt-0 w-6 h-6">
+          <button className="bg-red-500 dark:bg-red-700 text-white p-2 rounded-lg">
+            X
+          </button>
         </a>
+        <h1 className="text-2xl">Editing</h1>
         {/* Form to edit row data */}
         {/* for each row in columns.rows map an input with a default value using contents.column name */}
         {data.columns.rows.map((column: any) => (
-          <div className="flex flex-col">
+          <div className="flex flex-col m-4">
             <label htmlFor={column.column_name}>{column.column_name}</label>
             <input
               type="text"
@@ -112,6 +116,7 @@ export default function Index() {
               id={column.column_name}
               name={column.column_name}
               defaultValue={data.contents.rows[0][column.column_name]}
+              className="dark:bg-gray-700 dark:text-white"
             />
           </div>
         ))}
@@ -147,7 +152,8 @@ export default function Index() {
           className="bg-blue-500 text-white p-2 rounded-lg"
           form="editRow"
         >
-          Submit
+          {/* save icon */}
+          Save
         </button>
       </div>
       {/* json of whats in form data */}

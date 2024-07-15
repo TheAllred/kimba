@@ -13,7 +13,7 @@ const ResultMessage: React.FC = (result) => {
 
   return (
     <div
-      className={`p-4 bg-gray-100 border border-gray-600 rounded-md  overflow-y-auto relative overflow-hidden ${
+      className={`p-4 bg-gray-100 border border-gray-600 rounded-md  overflow-y-auto relative overflow-hidden dark:bg-gray-800 dark:text-white ${
         isCollapsed ? "max-h-24 " : ""
       }`}
       onClick={toggleCollapse}

@@ -82,6 +82,7 @@ export default function Index() {
               type="text"
               name="cookieValue"
               className="rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              placeholder="postgresql://kevinallred:"
             />
             <button
               type="submit"

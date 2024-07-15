@@ -59,10 +59,10 @@ export const action = async (args: DataFunctionArgs) => {
       console.log(result.rows);
       return { sql, result };
     } catch (e) {
-      return { sql, error: e.message };
+      return { sql, e };
     }
   } else {
-    return { sql, error: "No SQL query provided" };
+    return { sql };
   }
 };
 
@@ -99,16 +99,27 @@ export default function Index() {
           </button>
         </Form>
         {/* Display the result of the query */}
+        {/* check if action data is an array */}
 
-        {actionData?.result && (
-          <div className="flex-col space-y-6">
-            <ResultMessage message={actionData.result} />
-            <SimpleTable
-              rows={actionData.result.rows}
-              fields={actionData.result.fields}
-            />
-          </div>
-        )}
+        {actionData?.result &&
+          (Array.isArray(actionData.result) ? (
+            actionData.result.map((item, index) => (
+              <div key={index}>
+                <ResultMessage message={item} />
+                <SimpleTable rows={item.rows} fields={item.fields} />
+              </div>
+            ))
+          ) : (
+            // Handle the case where actionData.result is not an array (e.g., an object)
+            <div className="flex-col space-y-6">
+              <ResultMessage message={actionData.result} />
+
+              <SimpleTable
+                rows={actionData.result.rows}
+                fields={actionData.result.fields}
+              />
+            </div>
+          ))}
       </NavSideBar>
     </div>
   );

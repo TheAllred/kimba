@@ -2,8 +2,8 @@ const SimpleTable = (result: { rows: any[]; fields: any[] }) => {
   return (
     // styled table to display query results
     <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-200 dark:bg-gray-800">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             {result.fields.map((field: any) => (
               <th
@@ -15,11 +15,11 @@ const SimpleTable = (result: { rows: any[]; fields: any[] }) => {
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-800">
+        <tbody className="bg-white divide-y divide-gray-800 dark:bg-gray-800 dark:divide-gray-400">
           {result.rows.map((row: any) => (
             <tr>
               {Object.values(row).map((value: any) => (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-white">
                   {value}
                 </td>
               ))}

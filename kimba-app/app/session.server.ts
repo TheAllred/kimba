@@ -1,5 +1,5 @@
 // postgresql://kevinallred@localhost:5432/kimba_dev
-
+// postgresql://kevinallred:ZJC1rCuZGgyEOwv8Pb8K7f4LWIOULJOb@dpg-cqam4mqju9rs739akspg-a.ohio-postgres.render.com/kimba_demo?ssl=true
 import {
   DataFunctionArgs,
   AppLoadContext,
@@ -41,7 +41,7 @@ export const getPool = createGetter(async function getPool(
   args: DataFunctionArgs
 ) {
   const connectionString = await getCookieValue(args);
-  if (connectionString === "") {
+  if (!connectionString) {
     throw redirect("/", {
       headers: {
         "Set-Cookie": await myCookie.serialize(""),
