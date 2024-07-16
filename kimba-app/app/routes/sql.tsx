@@ -43,7 +43,8 @@ ORDER BY
   );
 
   const connectionString = await getCookieValue(args);
-  const databaseName = connectionString.split("/")[3];
+  const databaseNamePre = connectionString.split("/")[3];
+  const databaseName = databaseNamePre.split("?")[0];
 
   return { tables, databaseName };
 }

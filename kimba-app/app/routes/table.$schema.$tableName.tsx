@@ -1,9 +1,19 @@
-import type { DataFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import type {
+  ActionFunctionArgs,
+  DataFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import {
+  Form,
+  Outlet,
+  useActionData,
+  useLoaderData,
+  Await,
+  defer,
+} from "@remix-run/react";
+import { Suspense } from "react";
+import LoaderSkeleton from "~/components/LoaderSkeleton";
 import Table from "~/components/Table";
-import { Form } from "@remix-run/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
 import { getPool } from "~/session.server";
 
 export const meta: MetaFunction = ({ params }) => {
@@ -43,10 +53,15 @@ export async function loader(args: DataFunctionArgs) {
   ORDER BY 
     c.ordinal_position`;
 
-  const columns = await pool.query(columnsQuery);
-  const contents = await pool.query(contentsQuery);
+  const columnsPromise = await pool.query(columnsQuery);
+  const contentsPromise = pool.query(contentsQuery);
 
-  return { contents, columns, target_table, table_schema };
+  return defer({
+    contents: contentsPromise,
+    columns: columnsPromise,
+    target_table,
+    table_schema,
+  });
 }
 
 // Note the "action" export name, this will handle our form POST
@@ -119,7 +134,12 @@ export const action = async (args: ActionFunctionArgs) => {
 
 export default function Index() {
   const actionData = useActionData<typeof action>();
-  const data = useLoaderData<typeof loader>();
+  const {
+    contents: contents,
+    columns: columns,
+    target_table,
+    table_schema,
+  } = useLoaderData<typeof loader>();
   return (
     <div className=" dark:bg-gray-900">
       {/* reload Form on submission */}
@@ -128,18 +148,19 @@ export default function Index() {
       </div>
       <Form id="newRow" method="post" reloadDocument></Form>
       <Form id="deleteRows" method="post" reloadDocument></Form>
-      <Table
-        target_table={data.target_table}
-        table_schema={data.table_schema}
-        columns={data.columns.rows}
-        contents={data.contents.rows}
-        actionData={actionData}
-      />
-      {/* json of what is contained in columns */}
-      {/* <div className="bg-gray-100 border border-gray-200 rounded-lg p-4">
-        <pre>{JSON.stringify(data.target_table, null, 2)}</pre>
-      </div> */}
-      {/* relative position div */}
+      <Suspense fallback={<LoaderSkeleton />}>
+        <Await resolve={contents}>
+          {(contents) => (
+            <Table
+              target_table={target_table}
+              table_schema={table_schema}
+              columns={columns.rows}
+              contents={contents.rows}
+              actionData={actionData}
+            />
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 }

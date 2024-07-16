@@ -1,6 +1,9 @@
 import type { DataFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Await, defer, Outlet, useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
+import LoaderSkeleton from "~/components/LoaderSkeleton";
 import NavSideBar from "~/components/NavSideBar";
+import NavSideBarSkeleton from "~/components/NavSideBarSkeleton";
 import { getCookieValue, getPool } from "~/session.server";
 
 export const meta: MetaFunction = () => {
@@ -12,7 +15,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader(args: DataFunctionArgs) {
   const pool = await getPool(args);
-  const { rows: tables } = await pool.query(
+  const tablesPromise = pool.query(
     `SELECT 
   table_schema, 
   jsonb_agg(table_name) AS tables
@@ -31,17 +34,23 @@ ORDER BY
   const dataBaseNamePre = connectionString.split("/")[3];
   // remove any thing after ? if there is in the database name
   const dataBaseName = dataBaseNamePre.split("?")[0];
-  return { tables, dataBaseName };
+  return defer({ tables: tablesPromise, dataBaseName });
 }
 
 export default function Index() {
-  const data = useLoaderData<typeof loader>();
+  const { tables, dataBaseName } = useLoaderData<typeof loader>();
 
   return (
     <>
-      <NavSideBar tables={data.tables} databaseName={data.dataBaseName}>
-        <Outlet />
-      </NavSideBar>
+      <Suspense fallback={<NavSideBarSkeleton />}>
+        <Await resolve={tables}>
+          {(tables) => (
+            <NavSideBar tables={tables.rows} databaseName={dataBaseName}>
+              <Outlet />
+            </NavSideBar>
+          )}
+        </Await>
+      </Suspense>
     </>
   );
 }
