@@ -65,11 +65,16 @@ export const action = async (args: DataFunctionArgs) => {
   // get intent
   const intent = formData.get("intent");
   switch (intent) {
-    case "execute":
+    case "execute": {
       const sql = formData.get("sql");
-      const result = await pool.query(sql);
-      return { result, sql };
-    case "askGPT":
+      try {
+        const result = await pool.query(sql);
+        return { result, sql };
+      } catch (error) {
+        return { result: error, sql };
+      }
+    }
+    case "askGPT": {
       const prompt = formData.get("prompt");
       const columns = await pool.query(
         `select table_schema, table_name, column_name, data_type from information_schema.columns where table_schema != 'pg_catalog' and table_schema != 'information_schema'`
@@ -108,6 +113,7 @@ export const action = async (args: DataFunctionArgs) => {
         console.error("Error calling OpenAI:", error);
         throw new Error("Failed to generate response from OpenAI.");
       }
+    }
     default:
       return { error: "Invalid intent" };
   }
@@ -194,17 +200,27 @@ export default function Index() {
             // Handle the case where actionData.result is not an array (e.g., an object)
             <div className="flex-col space-y-6">
               <ResultMessage message={actionData} />
-              <SimpleTable
-                rows={actionData.result.rows}
-                fields={actionData.result.fields}
-              />
-              <div className="h-screen w-screen">
-                <SimpleBarChart
-                  data={actionData.result.rows}
-                  xAxis={actionData.result.fields[0].name}
-                  yAxis={actionData.result.fields[1].name}
-                />
-              </div>
+              {actionData.result.rows && (
+                <>
+                  <SimpleTable
+                    rows={actionData.result.rows}
+                    fields={actionData.result.fields}
+                  />
+                  {actionData.result.fields &&
+                    actionData.result.fields.length > 0 &&
+                    actionData.result.fields[0].name &&
+                    actionData.result.fields[1] &&
+                    actionData.result.fields[1].name && (
+                      <div className="h-screen w-screen">
+                        <SimpleBarChart
+                          data={actionData.result.rows}
+                          xAxis={actionData.result.fields[0].name}
+                          yAxis={actionData.result.fields[1].name}
+                        />
+                      </div>
+                    )}
+                </>
+              )}
             </div>
           ))}
       </NavSideBar>

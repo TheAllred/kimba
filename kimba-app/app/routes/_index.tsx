@@ -2,7 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import kimbaLogo from "../images/kimbalogo.svg";
-import kimbaDemo from "../images/KIMBA_DEMO.png";
+import kimbaDemo from "../images/localhost_3000_sql.png";
 import pg from "pg";
 
 import { myCookie } from "~/session.server";
@@ -31,7 +31,7 @@ export async function action({ request }: { request: Request }) {
     return { error: "Invalid connection string" };
   }
 
-  return redirect("/table/", {
+  return redirect("/start/", {
     headers: {
       "Set-Cookie": cookieHeader,
     },
