@@ -1,5 +1,5 @@
 {
-  "name": "my-remix-app",
+  "name": "kimba",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -23,8 +23,7 @@
     "pg": "^8.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "recharts": "^2.12.7",
-    "remix": "^2.10.3"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.8.0",
