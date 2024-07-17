@@ -151,7 +151,6 @@ export default function NavSideBar({
                             SQL Query
                           </a>
                         </li>
-                    
                       </ul>
                     </nav>
                   </div>
@@ -219,7 +218,6 @@ export default function NavSideBar({
                     SQL Query
                   </a>
                 </li>
-            
               </ul>
             </nav>
           </div>

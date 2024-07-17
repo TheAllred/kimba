@@ -94,6 +94,27 @@ export default function Index() {
               <p className="text-red-500">{actionData.error}</p>
             )}
           </Form>
+          <Form method="POST" className="mt-10 flex items-center gap-x-6">
+            <input
+              hidden
+              type="text"
+              value={
+                "postgresql://kevinallred:ZJC1rCuZGgyEOwv8Pb8K7f4LWIOULJOb@dpg-cqam4mqju9rs739akspg-a.ohio-postgres.render.com/kimba_demo?ssl=true"
+              }
+              name="cookieValue"
+              className="rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 opacity-30 focus-visible:outline-indigo-600"
+              placeholder="postgresql://kevinallred:"
+            />
+            <button
+              type="submit"
+              className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 opacity-30 focus-visible:outline-indigo-600"
+            >
+              Connect to demo Database
+            </button>
+            {actionData?.error && (
+              <p className="text-red-500">{actionData.error}</p>
+            )}
+          </Form>
         </div>
         <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">

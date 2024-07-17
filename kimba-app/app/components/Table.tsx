@@ -187,7 +187,8 @@ export default function Table({
               form="deleteRows"
               className="block sm:text-sm border-none rounded-md text-red-600 m-4 "
             >
-              Delete Selected ({clickedIndices.length} Row{clickedIndices.length > 1 ? "s" : ""})
+              Delete Selected ({clickedIndices.length} Row
+              {clickedIndices.length > 1 ? "s" : ""})
             </button>
           )}
           {/* Display Json of action Data */}

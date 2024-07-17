@@ -6,7 +6,6 @@ import {
 import { useActionData } from "@remix-run/react";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
 import { getPool } from "~/session.server";
- 
 
 export async function loader(args: DataFunctionArgs) {
   const { params } = args;
