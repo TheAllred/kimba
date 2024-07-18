@@ -93,8 +93,8 @@ export const action = async (args: DataFunctionArgs) => {
             {
               role: "system",
               content:
-                "Here is JSON representation of the database schema:" +
-                { columns },
+                "Here is JSON representation of the database schema:\n    " +
+                JSON.stringify(columns),
             },
             { role: "user", content: prompt },
           ],
