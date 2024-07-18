@@ -14,7 +14,7 @@ type GetterFn<T> = (args: DataFunctionArgs) => T;
 // Create an HTTP-only cookie
 export const myCookie = createCookie("connection-string", {
   httpOnly: true,
-  secure: false, // Set to false if you're not using HTTPS during development
+  secure: process.env.NODE_ENV === "production", // Set to false if you're not using HTTPS during development
   sameSite: "strict",
   path: "/",
   maxAge: 3600, // 1 hour in seconds
